@@ -1,27 +1,35 @@
 package mail
 
 import (
+	"encoding/json"
 	"fmt"
+	"gorm-oracle/config"
 	"log"
-	"os"
-	"strconv"
 
 	"github.com/jordan-wright/email"
 )
 
-func SendMail(message string) {
+func SendMail(bodyData any) error {
+	// setting info
+	conf, _ := config.New()
 	// auth := smtp.PlainAuth("", "", "", "")
-	address := os.Getenv("SMPT_ADDRESS")
-	port, err := strconv.Atoi(os.Getenv("SMPT_PORT"))
+	address := conf.SmtpAddress
+	// port, err := strconv.Atoi(os.Getenv("SMPT_PORT"))
+	port := conf.SmtpPort
+	fromName := conf.FromName
+	fromAddress := conf.FromAddress
+	toAddress := conf.ToAdress
+
+	addr := fmt.Sprintf("%s:%d", address, port)
+	from := fmt.Sprintf("%s <%s>", fromName, fromAddress)
+	to := []string{toAddress}
+	subject := "Go Email Sample"
+
+	json, err := json.Marshal(bodyData)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	addr := fmt.Sprintf("%s:%d", address, port)
-	from := fmt.Sprintf("%s <%s>", os.Getenv("FROM_NAME"), os.Getenv("FROM_ADDRESS"))
-	to := []string{os.Getenv("TO_ADDRESS")}
-
-	subject := "Go Email Sample"
+	message := "WK_DATA: " + "\r\n" + string(json)
 	body := message
 
 	email := email.NewEmail()
@@ -31,8 +39,10 @@ func SendMail(message string) {
 	// email.Bcc =
 	email.Subject = subject
 	email.Text = []byte(body)
+	// 認証無し
 	sendErr := email.Send(addr, nil)
 	if sendErr != nil {
-		log.Fatal(sendErr)
+		return sendErr
 	}
+	return nil
 }

@@ -3,6 +3,7 @@ module gorm-oracle
 go 1.18
 
 require (
+	github.com/caarlos0/env/v6 v6.10.1 // indirect
 	github.com/dzwvip/oracle v1.3.0 // indirect
 	github.com/emirpasic/gods v1.12.0 // indirect
 	github.com/go-logfmt/logfmt v0.5.1 // indirect
