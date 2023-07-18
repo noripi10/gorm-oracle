@@ -14,7 +14,6 @@ func SendMail(bodyData any) error {
 	conf, _ := config.New()
 	// auth := smtp.PlainAuth("", "", "", "")
 	address := conf.SmtpAddress
-	// port, err := strconv.Atoi(os.Getenv("SMPT_PORT"))
 	port := conf.SmtpPort
 	fromName := conf.FromName
 	fromAddress := conf.FromAddress

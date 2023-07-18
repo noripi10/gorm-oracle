@@ -1,9 +1,11 @@
 package db
 
 import (
+	"context"
 	"fmt"
 	"gorm-oracle/config"
 	"log"
+	"time"
 
 	"github.com/dzwvip/oracle"
 	"gorm.io/gorm"
@@ -11,13 +13,7 @@ import (
 	_ "database/sql"
 )
 
-func NewDB() (*gorm.DB, error) {
-	// user := os.Getenv("ORACLE_DB_USER")
-	// password := os.Getenv("ORACLE_DB_PASSWORD")
-	// address := os.Getenv("ORACLE_DB_ADDRESS")
-	// port := os.Getenv("ORACLE_DB_PORT")
-	// service := os.Getenv("ORACLE_DB_SERVICE")
-
+func New(ctx context.Context) (*gorm.DB, func(), error) {
 	conf, err := config.New()
 	if err != nil {
 		log.Fatal(err)
@@ -31,8 +27,18 @@ func NewDB() (*gorm.DB, error) {
 		conf.DBService,
 	)
 	db, err := gorm.Open(oracle.Open(dsn), &gorm.Config{})
+	if err != nil {
+		return nil, nil, err
+	}
+	sqlDB, _ := db.DB()
 
-	return db, err
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+	if err := sqlDB.PingContext(ctx); err != nil {
+		return nil, func() { _ = sqlDB.Close() }, err
+	}
+
+	return db, func() { _ = sqlDB.Close() }, err
 }
 
 func CloseDB(db *gorm.DB) {

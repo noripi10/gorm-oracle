@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"gorm-oracle/db"
 	"gorm-oracle/mail"
@@ -10,11 +11,15 @@ import (
 
 func main() {
 	fmt.Println("goram-oralce")
+	run(context.Background())
+}
 
-	db, err := db.NewDB()
+func run(ctx context.Context) {
+	db, cleanup, err := db.New(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer cleanup()
 
 	// CREATE
 	// newWkData := model.WkData{ID: 999, DATA_1: "hoge", DATA_2: "fuga", DATA_3: "hogehoge", DATA_4: "fugafuga", DATA_5: "123"}
