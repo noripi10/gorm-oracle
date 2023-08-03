@@ -1,10 +1,7 @@
 package config
 
 import (
-	"log"
-
 	"github.com/caarlos0/env/v6"
-	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -21,12 +18,6 @@ type Config struct {
 }
 
 func New() (*Config, error) {
-	// .env
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	conf := &Config{}
 	if err := env.Parse(conf); err != nil {
 		return nil, err

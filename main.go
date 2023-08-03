@@ -7,10 +7,17 @@ import (
 	"gorm-oracle/mail"
 	"gorm-oracle/model"
 	"log"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
 	fmt.Println("goram-oralce")
+	// .env
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatal(err)
+	}
 	run(context.Background())
 }
 
@@ -28,7 +35,7 @@ func run(ctx context.Context) {
 
 	// READ
 	var wkDatas []model.WkData
-	db.Where("ID >= ? AND ID <= ?", 10, 11).Order("id desc").Find(&wkDatas)
+	db.Where("ID >= ? AND ID <= ?", 666, 667).Order("id desc").Find(&wkDatas)
 	fmt.Println(wkDatas)
 	for index, wkData := range wkDatas {
 		fmt.Println(index, wkData.ID)
