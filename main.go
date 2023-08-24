@@ -35,7 +35,7 @@ func run(ctx context.Context) {
 
 	// READ
 	var wkDatas []model.WkData
-	db.Where("ID >= ? AND ID <= ?", 666, 667).Order("id desc").Find(&wkDatas)
+	db.Where("ID >= ? AND ID <= ?", 1, 2).Order("id desc").Find(&wkDatas)
 	fmt.Println(wkDatas)
 	for index, wkData := range wkDatas {
 		fmt.Println(index, wkData.ID)
