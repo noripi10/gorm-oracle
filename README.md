@@ -1,5 +1,8 @@
 # gorm + Oracle DB で簡単なCRUD + Mail処理
 
+
+## DB (gorm)
+
 - Oracle clientは事前にインストール
 
   Version: 11.2.0.4
@@ -15,3 +18,9 @@ WkData -> wk_data
 ```
 
 - Tablerインターフェースでテーブル名を変更することも可能
+
+## Mail
+
+ライブラリ
+
+github.com/jordan-wright/email
