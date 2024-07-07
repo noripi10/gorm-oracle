@@ -13,7 +13,7 @@ type WkData struct {
 	DATA_7      string    `json:"data_7" gorm:"size:100"`
 	DATA_8      string    `json:"data_8" gorm:"size:100"`
 	INSERT_DATE time.Time `json:"insert_date" gorm:"type:Date"`
-	UPDATE_DATE time.Time `json:"update_date" gorm:"type:Date"`
+	UPDATE_DATE time.Time `json:"update_date" gorm:"type:Date;autoUpdateTime"`
 }
 
 // Tabler struct

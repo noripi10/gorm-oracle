@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"gorm-oracle/db"
-	"gorm-oracle/mail"
 	"gorm-oracle/model"
 	"log"
 
@@ -27,12 +26,6 @@ func run(ctx context.Context) {
 		log.Fatal(err)
 	}
 	defer cleanup()
-
-	// CREATE
-	// newWkData := model.WkData{ID: 999, DATA_1: "hoge", DATA_2: "fuga", DATA_3: "hogehoge", DATA_4: "fugafuga", DATA_5: "123"}
-	// result := db.Create(&newWkData)
-	// fmt.Println("result", result)
-
 	// READ
 	var wkDatas []model.WkData
 	db.Where("ID >= ? AND ID <= ?", 1, 2).Order("id desc").Find(&wkDatas)
@@ -41,12 +34,17 @@ func run(ctx context.Context) {
 		fmt.Println(index, wkData.ID)
 	}
 
+	// CREATE
+	// newWkData := model.WkData{ID: 999, DATA_1: "hoge", DATA_2: "fuga", DATA_3: "hogehoge", DATA_4: "fugafuga", DATA_5: "123"}
+	// result := db.Create(&newWkData)
+	// fmt.Println("result", result)
+
 	// UPDATE
-	// result := db.Model(model.WkData{}).Where("id >= ? and id <= ?", 10, 11).Updates(model.WkData{DATA_5: "hoge"})
+	// result := db.Model(&model.WkData{}).Where("id = ?", 999).Updates(model.WkData{DATA_1: strconv.Itoa(rand.Intn(100))})
 	// fmt.Println("result", result)
 
 	// DELETE
 	// db.Exec("delete wk_data where id = 1")
 
-	mail.SendMail(wkDatas)
+	// mail.SendMail(wkDatas)
 }

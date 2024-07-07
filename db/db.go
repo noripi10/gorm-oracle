@@ -9,11 +9,11 @@ import (
 	"os"
 	"time"
 
+	_ "database/sql"
+
 	"github.com/dzwvip/oracle"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-
-	_ "database/sql"
 )
 
 func New(ctx context.Context) (*gorm.DB, func(), error) {
@@ -31,7 +31,7 @@ func New(ctx context.Context) (*gorm.DB, func(), error) {
 	)
 
 	_logger := logger.New(
-		log.New(os.Stdout, "\n[LOG]", log.LstdFlags),
+		log.New(os.Stdout, "\n[GORM LOG]", log.LstdFlags),
 		logger.Config{
 			SlowThreshold:             time.Second,
 			Colorful:                  true,
@@ -46,6 +46,7 @@ func New(ctx context.Context) (*gorm.DB, func(), error) {
 		&gorm.Config{
 			Logger: _logger,
 			// DisableForeignKeyConstraintWhenMigrating: true,
+			SkipDefaultTransaction: true,
 		})
 	if err != nil {
 		return nil, nil, err
@@ -53,12 +54,12 @@ func New(ctx context.Context) (*gorm.DB, func(), error) {
 
 	merr := db.AutoMigrate(&model.WkData{})
 	if merr != nil {
-		log.Fatal("DB Migration Error")
+		return nil, nil, err
 	}
 
 	sqlDB, _ := db.DB()
 
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, 60*time.Second)
 	defer cancel()
 	if err := sqlDB.PingContext(ctx); err != nil {
 		return nil, func() { _ = sqlDB.Close() }, err
